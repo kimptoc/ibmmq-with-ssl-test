@@ -28,3 +28,5 @@ hs_err_pid*
 out/
 src/main/resources/
 src/test/
+*.pem
+*.p12
