@@ -1,4 +1,4 @@
-Basic tester app to run ibm mq server (ssl disabled) and the sample client.
+Basic tester app to run ibm mq server (ssl 'should' be enabled) and the sample client.
 
 To run it, use docker-compose like so:
 ```
@@ -10,3 +10,5 @@ Which should end with results like this, after 30 seconds (time configured for M
 ```
 mqclient    | SimplePubSub: Your lucky number today is 561
 ```
+
+Currently working - but shouldn't be :(
