@@ -1,0 +1,25 @@
+version: "3"
+
+services:
+  ibmmq:
+    image: ibmcom/mq
+    container_name: mq
+    volumes:
+      - mq_java_lib:/opt/mqm/java/lib
+    ports:
+      - "1414:1414"
+      - "9443:9443"
+    environment:
+      - LICENSE=accept
+      - MQ_QMGR_NAME=QM1
+
+  mqclient:
+    build: .
+    container_name: mqclient
+    links:
+      - ibmmq
+    volumes:
+      - mq_java_lib:/opt/mqm/java/lib
+
+volumes:
+  mq_java_lib:
