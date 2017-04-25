@@ -5,6 +5,7 @@ services:
     build: mq-with-ssl/
     volumes:
       - mq_java_lib:/opt/mqm/java/lib
+      - mq_certs:/etc/mqcerts
     ports:
       - "1414:1414"
       - "9443:9443"
@@ -15,6 +16,8 @@ services:
       - ibmmq
     volumes:
       - mq_java_lib:/opt/mqm/java/lib
+      - mq_certs:/etc/mqcerts
 
 volumes:
   mq_java_lib:
+  mq_certs:

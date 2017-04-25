@@ -1,5 +1,7 @@
 FROM ibmcom/ibmjava:sdk
 
+# use unlimited jurisdiction policy files
+RUN cp /opt/ibm/java/demo/jce/policy-files/unrestricted/* /opt/ibm/java/jre/lib/security/
 
 RUN mkdir -p /app/mqtest
 WORKDIR /app/mqtest
