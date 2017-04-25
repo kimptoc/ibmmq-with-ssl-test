@@ -5,5 +5,6 @@ RUN mkdir -p /app/mqtest
 WORKDIR /app/mqtest
 ADD . /app/mqtest
 
-CMD ["./src/try_mq.sh"]
+RUN sed 's/\r//' src/try_mq.sh > try_mq_tweaked.sh
 
+CMD ["bash","try_mq_tweaked.sh"]
