@@ -1,4 +1,5 @@
-Basic tester app to run ibm mq server (ssl 'should' be enabled) and the sample client.
+Basic tester app to run ibm mq server (ssl 'should' be enabled)
+and 2 test clients - one with ssl enabled and one without (which should fail)
 
 To run it, use docker-compose like so:
 ```
