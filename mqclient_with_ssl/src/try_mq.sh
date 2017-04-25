@@ -25,7 +25,7 @@ ls -ltr
 
 echo "Lets give MQ time to start"
 
-sleep 60
+sleep 180
 
 echo "Running Java code"
 
