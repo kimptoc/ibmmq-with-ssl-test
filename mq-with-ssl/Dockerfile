@@ -12,6 +12,9 @@ ADD . /etc/mqcerts
 
 RUN openssl req -batch -newkey rsa:2048 -new -nodes -x509 -days 3650 -keyout key.pem -out cert.pem
 
+RUN echo "x" >openssl.params
+RUN echo "x" >>openssl.params
+
 RUN openssl pkcs12 -export -password file:openssl.params  -in cert.pem -inkey key.pem  -out keystore.p12 -name myAlias
 
 ENV MQ_TLS_KEYSTORE=/etc/mqcerts/keystore.p12
