@@ -21,14 +21,19 @@ ls -ltr /etc/mqcerts
 
 keytool -importkeystore -noprompt -srckeystore /etc/mqcerts/keystore.p12 -srcstoretype pkcs12 -srcalias myAlias -srcstorepass x -destkeystore ./keystore.jks -deststoretype jks -deststorepass ABCDEF -destalias myAlias
 
+echo "keytool return code $?"
+
 ls -ltr
+
+keytool -list -keystore ./keystore.jks -noprompt -storepass ABCDEF
 
 echo "Lets give MQ time to start"
 
-sleep 180
+sleep 60
 
 echo "Running Java code"
 
-export JAVA_OPTS="-Djavax.net.ssl.trustStore=./keystore.jks -Djavax.net.ssl.keyStore=./keystore.jks -Djavax.net.ssl.trustStorePassword=ABCDEF -Djavax.net.ssl.keyStorePassword=ABCDEF -Dcom.ibm.mq.cfg.useIBMCipherMappings=false -Dcom.ibm.mq.cfg.preferTLS=true"
+export JAVA_OPTS="-Djavax.net.ssl.trustStore=./keystore.jks -Djavax.net.ssl.keyStore=./keystore.jks -Djavax.net.ssl.trustStorePassword=ABCDEF -Djavax.net.ssl.keyStorePassword=ABCDEF "
+#export JAVA_OPTS="-Djavax.net.ssl.trustStore=./keystore.jks -Djavax.net.ssl.keyStore=./keystore.jks -Djavax.net.ssl.trustStorePassword=ABCDEF -Djavax.net.ssl.keyStorePassword=ABCDEF -Dcom.ibm.mq.cfg.useIBMCipherMappings=false -Dcom.ibm.mq.cfg.preferTLS=true"
 
 java $JAVA_OPTS -cp $MQ_CP:out/main/java SimplePubSub

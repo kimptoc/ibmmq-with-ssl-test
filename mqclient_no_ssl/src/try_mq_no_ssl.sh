@@ -18,7 +18,7 @@ ls -ltr out/main/java
 
 echo "Lets give MQ time to start"
 
-sleep 180
+sleep 60
 
 echo "Running Java code"
 
