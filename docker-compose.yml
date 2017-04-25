@@ -2,7 +2,10 @@ version: "3"
 
 services:
   ibmmq:
-    build: mq-with-ssl/
+    build:
+      context: mq-with-ssl/
+      args:
+        - http_proxy
     volumes:
       - mq_java_lib:/opt/mqm/java/lib
       - mq_certs:/etc/mqcerts
