@@ -81,7 +81,7 @@ public class SimplePubSub {
       cf.setIntProperty(WMQConstants.WMQ_CONNECTION_MODE, WMQConstants.WMQ_CM_CLIENT);
       cf.setStringProperty(WMQConstants.WMQ_QUEUE_MANAGER, "QM1");
       cf.setStringProperty(WMQConstants.WMQ_SSL_CIPHER_SUITE, "SSL_RSA_WITH_AES_256_GCM_SHA384");
-      cf.setStringProperty(WMQConstants.WMQ_SSL_CIPHER_SPEC, "TLS_RSA_WITH_AES_256_GCM_SHA384");
+//      cf.setStringProperty(WMQConstants.WMQ_SSL_CIPHER_SPEC, "TLS_RSA_WITH_AES_256_GCM_SHA384");
 
       // Create JMS objects
       connection = cf.createConnection("admin","passw0rd");

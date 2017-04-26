@@ -21,13 +21,13 @@ services:
       - mq_java_lib:/opt/mqm/java/lib
       - mq_certs:/etc/mqcerts
 
-  mqclientnossl:
-    build: mqclient_no_ssl/
-    links:
-      - ibmmq
-    volumes:
-      - mq_java_lib:/opt/mqm/java/lib
-      - mq_certs:/etc/mqcerts
+#  mqclientnossl:
+#    build: mqclient_no_ssl/
+#    links:
+#      - ibmmq
+#    volumes:
+#      - mq_java_lib:/opt/mqm/java/lib
+#      - mq_certs:/etc/mqcerts
 
 volumes:
   mq_java_lib:
