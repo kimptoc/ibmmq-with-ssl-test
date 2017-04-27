@@ -10,7 +10,6 @@ RUN apt-get install openssl
 
 RUN mkdir -p /etc/mqcerts
 WORKDIR /etc/mqcerts
-ADD . /etc/mqcerts
 
 RUN openssl req -batch -newkey rsa:2048 -new -nodes -x509 -days 3650 -keyout key.pem -out cert.pem
 
@@ -22,5 +21,10 @@ RUN openssl pkcs12 -export -password file:openssl.params  -in cert.pem -inkey ke
 ENV MQ_TLS_KEYSTORE=/etc/mqcerts/keystore.p12
 ENV MQ_TLS_PASSPHRASE=x
 
+COPY *.sh /usr/local/bin/
+
+COPY mq-dev-config /etc/mqm/mq-dev-config
+
 #CMD ["ls","-ltr"]
+#ENTRYPOINT ["./mq_overridden.sh"]
 

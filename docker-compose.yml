@@ -13,21 +13,29 @@ services:
       - "1414:1414"
       - "9443:9443"
 
-  mqclient:
-    build: mqclient_with_ssl/
+  mqmutualclient:
+    build: mqclient_with_mutual_ssl/
     links:
       - ibmmq
     volumes:
       - mq_java_lib:/opt/mqm/java/lib
       - mq_certs:/etc/mqcerts
 
-  mqclientnossl:
-    build: mqclient_no_ssl/
-    links:
-      - ibmmq
-    volumes:
-      - mq_java_lib:/opt/mqm/java/lib
-      - mq_certs:/etc/mqcerts
+#  mqclient:
+#    build: mqclient_with_ssl/
+#    links:
+#      - ibmmq
+#    volumes:
+#      - mq_java_lib:/opt/mqm/java/lib
+#      - mq_certs:/etc/mqcerts
+#
+#  mqclientnossl:
+#    build: mqclient_no_ssl/
+#    links:
+#      - ibmmq
+#    volumes:
+#      - mq_java_lib:/opt/mqm/java/lib
+#      - mq_certs:/etc/mqcerts
 
 volumes:
   mq_java_lib:
