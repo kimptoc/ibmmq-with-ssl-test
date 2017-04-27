@@ -14,3 +14,8 @@ mqclient    | SimplePubSub: Your lucky number today is 561
 
 And it works!
   
+ **TODO**
+ 
+ - setup mutual ssl
+ - using oracle jdk client
+ - try v8 MQ
