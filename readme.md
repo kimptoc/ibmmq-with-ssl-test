@@ -16,7 +16,7 @@ For the Oracle Java without SSL example:
 $ docker-compose up ibmmqnossl mqclientoraclenossl
 ```
 
-For the Oracle Java with SSL example (currently not working):
+For the Oracle Java with SSL example:
 ```
 $ docker-compose.exe up ibmmq mqclientoracle
 ```

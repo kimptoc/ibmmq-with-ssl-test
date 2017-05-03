@@ -1,4 +1,8 @@
-FROM java
+# keytool in this image is not on path
+FROM isuper/java-oracle:jdk_8
+
+# this is openjdk
+#FROM java
 
 # use unlimited jurisdiction policy files
 # RUN cp /opt/ibm/java/demo/jce/policy-files/unrestricted/* /opt/ibm/java/jre/lib/security/

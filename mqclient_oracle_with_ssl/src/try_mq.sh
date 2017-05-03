@@ -19,13 +19,13 @@ echo "Convert pkcs12 keystore to jks"
 
 ls -ltr /etc/mqcerts
 
-keytool -importkeystore -noprompt -srckeystore /etc/mqcerts/keystore.p12 -srcstoretype pkcs12 -srcalias myAlias -srcstorepass x -destkeystore ./keystore.jks -deststoretype jks -deststorepass ABCDEF -destalias myAlias
+/usr/lib/jvm/java-8-oracle/bin/keytool -importkeystore -noprompt -srckeystore /etc/mqcerts/keystore.p12 -srcstoretype pkcs12 -srcalias myAlias -srcstorepass x -destkeystore ./keystore.jks -deststoretype jks -deststorepass ABCDEF -destalias myAlias
 
 echo "keytool return code $?"
 
 ls -ltr
 
-keytool -list -keystore ./keystore.jks -noprompt -storepass ABCDEF
+/usr/lib/jvm/java-8-oracle/bin/keytool -list -keystore ./keystore.jks -noprompt -storepass ABCDEF
 
 echo "Lets give MQ time to start"
 
@@ -41,5 +41,7 @@ export JAVA_OPTS="$JAVA_OPTS -Djavax.net.ssl.trustStore=./keystore.jks -Djavax.n
 # key store has the client certificate in it - need to gen/send this to the server # TODO
 #export JAVA_OPTS="$JAVA_OPTS -Djavax.net.ssl.keyStore=./keystore.jks -Djavax.net.ssl.keyStorePassword=ABCDEF "
 export JAVA_OPTS="$JAVA_OPTS -Dcom.ibm.mq.cfg.useIBMCipherMappings=false -Dcom.ibm.mq.cfg.preferTLS=true"
+
+java -version
 
 java $JAVA_OPTS -cp $MQ_CP:out/main/java SimplePubSub

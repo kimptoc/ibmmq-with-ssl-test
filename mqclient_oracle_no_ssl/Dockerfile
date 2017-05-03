@@ -1,4 +1,5 @@
-FROM java
+FROM isuper/java-oracle:jdk_8
+#FROM java # this is openjdk
 
 RUN mkdir -p /app/mqtest
 WORKDIR /app/mqtest
