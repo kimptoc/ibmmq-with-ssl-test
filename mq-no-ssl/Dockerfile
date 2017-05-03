@@ -1,0 +1,6 @@
+FROM ibmcom/mq
+
+ENV LICENSE=accept
+ENV MQ_QMGR_NAME=QM1
+
+

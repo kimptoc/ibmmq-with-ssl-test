@@ -18,11 +18,18 @@
  */
 
 
+import javax.jms.Connection;
+import javax.jms.Destination;
+import javax.jms.JMSException;
+import javax.jms.Message;
+import javax.jms.MessageConsumer;
+import javax.jms.MessageProducer;
+import javax.jms.Session;
+import javax.jms.TextMessage;
+
 import com.ibm.msg.client.jms.JmsConnectionFactory;
 import com.ibm.msg.client.jms.JmsFactoryFactory;
 import com.ibm.msg.client.wmq.WMQConstants;
-
-import javax.jms.*;
 
 /**
  * A minimal and simple application for Publish-Subscribe messaging.
@@ -43,7 +50,7 @@ import javax.jms.*;
  * JNDI in use: No
  * 
  */
-public class SimplePubSubNoSSL {
+public class SimplePubSub {
 
   // System exit status value (assume unset value to be 1)
   private static int status = 1;
@@ -68,11 +75,13 @@ public class SimplePubSubNoSSL {
       JmsConnectionFactory cf = ff.createConnectionFactory();
 
       // Set the properties
-      cf.setStringProperty(WMQConstants.WMQ_HOST_NAME, "ibmmqnossl");
+      cf.setStringProperty(WMQConstants.WMQ_HOST_NAME, "ibmmq");
       cf.setIntProperty(WMQConstants.WMQ_PORT, 1414);
       cf.setStringProperty(WMQConstants.WMQ_CHANNEL, "DEV.ADMIN.SVRCONN");
       cf.setIntProperty(WMQConstants.WMQ_CONNECTION_MODE, WMQConstants.WMQ_CM_CLIENT);
       cf.setStringProperty(WMQConstants.WMQ_QUEUE_MANAGER, "QM1");
+      cf.setStringProperty(WMQConstants.WMQ_SSL_CIPHER_SUITE, "SSL_RSA_WITH_AES_256_GCM_SHA384");
+      cf.setStringProperty(WMQConstants.WMQ_SSL_CIPHER_SPEC, "TLS_RSA_WITH_AES_256_GCM_SHA384");
 
       // Create JMS objects
       connection = cf.createConnection("admin","passw0rd");

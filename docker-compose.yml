@@ -13,6 +13,17 @@ services:
       - "1414:1414"
       - "9443:9443"
 
+  ibmmqnossl:
+    build:
+      context: mq-no-ssl/
+      args:
+        - http_proxy
+    volumes:
+      - mq2_java_lib:/opt/mqm/java/lib
+    ports:
+      - "1414:1414"
+      - "9443:9443"
+
   mqmutualclient:
     build: mqclient_with_mutual_ssl/
     links:
@@ -21,22 +32,37 @@ services:
       - mq_java_lib:/opt/mqm/java/lib
       - mq_certs:/etc/mqcerts
 
-#  mqclient:
-#    build: mqclient_with_ssl/
-#    links:
-#      - ibmmq
-#    volumes:
-#      - mq_java_lib:/opt/mqm/java/lib
-#      - mq_certs:/etc/mqcerts
-#
-#  mqclientnossl:
-#    build: mqclient_no_ssl/
-#    links:
-#      - ibmmq
-#    volumes:
-#      - mq_java_lib:/opt/mqm/java/lib
-#      - mq_certs:/etc/mqcerts
+  mqclient:
+    build: mqclient_with_ssl/
+    links:
+      - ibmmq
+    volumes:
+      - mq_java_lib:/opt/mqm/java/lib
+      - mq_certs:/etc/mqcerts
+
+  mqclientoracle:
+    build: mqclient_oracle_with_ssl/
+    links:
+      - ibmmq
+    volumes:
+      - mq_java_lib:/opt/mqm/java/lib
+      - mq_certs:/etc/mqcerts
+
+  mqclientnossl:
+    build: mqclient_no_ssl/
+    links:
+      - ibmmqnossl
+    volumes:
+      - mq2_java_lib:/opt/mqm/java/lib
+
+  mqclientoraclenossl:
+    build: mqclient_oracle_no_ssl/
+    links:
+      - ibmmqnossl
+    volumes:
+      - mq2_java_lib:/opt/mqm/java/lib
 
 volumes:
   mq_java_lib:
+  mq2_java_lib:
   mq_certs:
