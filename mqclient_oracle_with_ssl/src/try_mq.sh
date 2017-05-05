@@ -1,10 +1,16 @@
 #!/usr/bin/env bash
 
+set -x
+
 echo "Running try_mq.sh"
 
 #ls -ltr /opt/mqm/java/lib
 
-export MQ_CP="`echo /opt/mqm/java/lib/*.jar | sed 's/ /:/g'`"
+export MQ_JARS=/opt/mqm/java/lib
+#export MQ_CP="`echo /opt/mqm/java/lib/*.jar | sed 's/ /:/g'`"
+
+export MQ_CP=""
+export MQ_CP="${MQ_CP}:${MQ_JARS}/com.ibm.mq.allclient.jar"
 
 echo "Compiling Java code"
 
