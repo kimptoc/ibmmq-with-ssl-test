@@ -66,3 +66,9 @@ volumes:
   mq_java_lib:
   mq2_java_lib:
   mq_certs:
+    driver_opts:
+      type: none
+      device: ${certs_mount}
+      o: bind
+
+# eg /c/Users/kimptonc/docker/ibmmq/tmpcerts

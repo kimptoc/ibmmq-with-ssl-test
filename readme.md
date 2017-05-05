@@ -31,7 +31,13 @@ mqclient    | SimplePubSub: Your lucky number today is 561
 And it works!
   
  **TODO**
- 
- - using oracle jdk client with SSL
+
  - setup mutual ssl (IBM and Java)
  - try v8 MQ
+ 
+ **NOTES**
+ 
+ - define certs_mount env variable before running docker-compose so that generated certs are visible outside of container
+ - recommend you docker-compose stop/rm the containers between test runs - as the mq server can out of sync with the cert files
+ - the exposed certs don't seem to work with MQ explorer, but work fine with a Java client app :(
+ 

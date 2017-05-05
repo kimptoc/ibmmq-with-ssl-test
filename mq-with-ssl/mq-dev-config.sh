@@ -62,10 +62,12 @@ configure_tls()
     exit 1
   fi
 
+  keystore_created=false
   # Create keystore
   if [ ! -e "/tmp/tlsTemp/key.kdb" ]; then
     # Keystore does not exist
     runmqakm -keydb -create -db /tmp/tlsTemp/key.kdb -pw ${PASSPHRASE} -stash
+    keystore_created=true
   fi
 
   # Create stash file
@@ -75,22 +77,25 @@ configure_tls()
   fi
 
   # Import certificate
-  runmqakm -cert -import -file ${LOCATION} -pw ${PASSPHRASE} -target /tmp/tlsTemp/key.kdb -target_pw ${PASSPHRASE}
+  if [ "${keystore_created}" == "true" ]; then
+    runmqakm -cert -import -file ${LOCATION} -pw ${PASSPHRASE} -target /tmp/tlsTemp/key.kdb -target_pw ${PASSPHRASE}
 
-  # Find certificate to rename it to something MQ can use
-  CERT=`runmqakm -cert -list -db /tmp/tlsTemp/key.kdb -pw ${PASSPHRASE} | egrep -m 1 "^\\**-"`
-  CERTL=`echo ${CERT} | sed -e s/^\\**-//`
-  CERTL=${CERTL:1}
-  echo "Using certificate with label ${CERTL}"
+      # Find certificate to rename it to something MQ can use
+      CERT=`runmqakm -cert -list -db /tmp/tlsTemp/key.kdb -pw ${PASSPHRASE} | egrep -m 1 "^\\**-"`
+      CERTL=`echo ${CERT} | sed -e s/^\\**-//`
+      CERTL=${CERTL:1}
+      echo "Using certificate with label ${CERTL}"
 
-  # Rename certificate
-  runmqakm -cert -rename -db /tmp/tlsTemp/key.kdb -pw ${PASSPHRASE} -label "${CERTL}" -new_label queuemanagercertificate
+      # Rename certificate
+      runmqakm -cert -rename -db /tmp/tlsTemp/key.kdb -pw ${PASSPHRASE} -label "${CERTL}" -new_label queuemanagercertificate
 
-  # Now copy the key files
-  chown mqm:mqm /tmp/tlsTemp/key.*
-  chmod 640 /tmp/tlsTemp/key.*
-  su -c "cp -PTv /tmp/tlsTemp/key.kdb ${DATA_PATH}/qmgrs/$1/ssl/key.kdb" -l mqm
-  su -c "cp -PTv /tmp/tlsTemp/key.sth ${DATA_PATH}/qmgrs/$1/ssl/key.sth" -l mqm
+      # Now copy the key files
+      chown mqm:mqm /tmp/tlsTemp/key.*
+      chmod 640 /tmp/tlsTemp/key.*
+      su -c "cp -PTv /tmp/tlsTemp/key.kdb ${DATA_PATH}/qmgrs/$1/ssl/key.kdb" -l mqm
+      su -c "cp -PTv /tmp/tlsTemp/key.sth ${DATA_PATH}/qmgrs/$1/ssl/key.sth" -l mqm
+
+  fi
 
   # Set up Dev default MQ objects
   # Make channel TLS CHANNEL
@@ -104,6 +109,42 @@ configure_tls()
 #    su -l mqm -c "echo \"ALTER CHANNEL('DEV.SSLCAUTH.SVRCONN') CHLTYPE(SVRCONN) SSLCIPH(TLS_RSA_WITH_AES_256_GCM_SHA384) SSLCAUTH(REQUIRED)\" | runmqsc $1"
   fi
 }
+
+echo "============================================================================================================"
+echo "Setting up SSL certs/keystore - at runtime, so that we can put the keystore in a host dir, if mounted"
+mkdir -p /etc/mqcerts
+cd /etc/mqcerts
+
+if [ ! -e "/etc/mqcerts/keystore.jks" ]; then
+
+    openssl req -batch -newkey rsa:2048 -new -nodes -x509 -days 3650 -keyout key.pem -out cert.pem
+
+    echo "x" >openssl.params
+    echo "x" >>openssl.params
+
+    openssl pkcs12 -export -password file:openssl.params  -in cert.pem -inkey key.pem  -out keystore.p12 -name myAlias
+
+    echo "Convert pkcs12 keystore to jks for Java clients"
+
+    ls -ltr /etc/mqcerts
+
+    /opt/mqm/java/jre64/jre/bin/keytool -importkeystore -noprompt -srckeystore /etc/mqcerts/keystore.p12 -srcstoretype pkcs12 -srcalias myAlias -srcstorepass x -destkeystore /etc/mqcerts/keystore.jks -deststoretype jks -deststorepass ABCDEF -destalias myAlias
+
+    echo "keytool return code $?"
+
+    ls -ltr /etc/mqcerts
+
+    /opt/mqm/java/jre64/jre/bin/keytool -list -keystore /etc/mqcerts/keystore.jks -noprompt -storepass ABCDEF
+
+else
+  echo "Java keystore file exists /etc/mqcerts/keystore.jks - so assume its good to use"
+    ls -ltr /etc/mqcerts
+fi
+export MQ_TLS_KEYSTORE=/etc/mqcerts/keystore.p12
+export MQ_TLS_PASSPHRASE=x
+
+echo "============================================================================================================"
+
 
 # Check valid parameters
 if [ ! -z ${MQ_TLS_KEYSTORE+x} ]; then
@@ -152,12 +193,15 @@ if [ "${MQ_DEV}" == "true" ]; then
 fi
 
 if [ ! -z ${MQ_TLS_KEYSTORE+x} ]; then
-  if [ ! -e "${DATA_PATH}/qmgrs/$1/ssl/key.kdb" ]; then
+# after a docker keystore restart, this is present, but its not enabling SSL on channels so remove instead
+#  if [ ! -e "${DATA_PATH}/qmgrs/$1/ssl/key.kdb" ]; then
     echo "Configuring TLS for queue manager $1"
     mkdir -p /tmp/tlsTemp
     chown mqm:mqm /tmp/tlsTemp
     configure_tls $1
-  else
-    echo "A key store already exists at '${DATA_PATH}/qmgrs/$1/ssl/key.kdb'"
-  fi
+#  else
+#    echo "A key store already exists at '${DATA_PATH}/qmgrs/$1/ssl/key.kdb'"
+#  fi
+else
+  echo "SSL/TLS not enabled"
 fi
